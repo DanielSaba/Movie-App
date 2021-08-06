@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.movie_proyect">
    <application
-        android:label="movie_proyect"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Peliculas"
+        android:icon="@mipmap/launcher_icon">
         
         <activity
             android:name=".MainActivity"
