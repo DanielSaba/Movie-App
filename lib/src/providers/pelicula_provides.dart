@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:movie_proyect/src/models/actores_model.dart';
 import 'package:movie_proyect/src/models/pelicula_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,7 +12,7 @@ class PeliculasProvider {
   String _language = 'es-ES';
 
   int _popularesPage = 0;
-  //bool _cargando = false;
+  bool _cargando = false;
 
   List<Pelicula> _populares = new List();
 
@@ -48,7 +49,7 @@ class PeliculasProvider {
 
 //GET POPULAR
   Future<List<Pelicula>> getPopular() async {
-    //if (_cargando) return [];
+    if (_cargando) return [];
 
     _popularesPage++;
 
@@ -63,8 +64,25 @@ class PeliculasProvider {
     _populares.addAll(resp);
 
     popularesSink(_populares);
-    //_cargando = false;
+    _cargando = false;
 
     return resp;
+  }
+
+//GET ACTORES
+  Future<List<Actor>> getActor(String peliId) async {
+    final url = Uri.https(_url, '3/movie/$peliId/credits',
+        {'api_key': _apiKey, 'language': _language});
+
+    final resp = await http.get(url);
+    final decodedData = json.decode(resp.body);
+    final cast = new Cast.fromJsonList(decodedData['cast']);
+    return cast.actores;
+  }
+
+  Future<List<Pelicula>> buscarPelicula(String query) async {
+    final url = Uri.https(_url, '3/search/movie',
+        {'api_key': _apiKey, 'language': _language, 'query': query});
+    return await _procesarRespuesta(url);
   }
 }
